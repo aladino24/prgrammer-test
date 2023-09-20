@@ -91,47 +91,49 @@
         $(document).ready(function() {
 
             var table = $('#table_activities').DataTable({
-                    ajax: {
-                        url: "{{ route('get-learning-activities') }}",
-                        type: "GET",
-                    },
-                    columns: [
-                        { data: 'learning_method', title: 'Metode' }, // Set the title for the learning_method column
-                        @foreach (['January', 'February', 'Maret', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
-                            {
-                                data: null,
-                                title: '{{$month}}', 
-                                render: function(data, type, row) {
-                                    // console.log(data.activity_months[0].learning_activity_id)
-                                    var activities = row.activity_months.filter(function(monthData) {
-                                        return monthData.month === '{{$month}}';
-                                    });
-
-                                    if (activities.length > 0) {
-                                        
-                                        var activitiesList = '<ul>';
-                                        activities.forEach(function(activity) {
-                                            activitiesList += '<li>' + activity.activities + '</li>';
-                                        });
-                                        activitiesList += '</ul>';
-                                        
-                                        return activitiesList
-                                    } else {
-                                        return ''; // No data for this month
-                                    }
-                                }
-                            },
-                        @endforeach
+                ajax: {
+                    url: "{{ route('get-learning-activities') }}",
+                    type: "GET",
+                },
+                columns: [
+                    { data: 'learning_method', title: 'Metode' },
+                    @foreach (['January', 'February', 'Maret', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
                         {
                             data: null,
-                            title: 'Action', 
+                            title: '{{$month}}',
                             render: function(data, type, row) {
-                               
+                                var activities = row.activity_months.filter(function(monthData) {
+                                    return monthData.month === '{{$month}}';
+                                });
+
+                                if (activities.length > 0) {
+                                    var activitiesList = '<ul>';
+                                    activities.forEach(function(activity) {
+                                        activitiesList += '<li>' + activity.activities + '</li>';
+                                    });
+                                    activitiesList += '</ul>';
+                                    
+                                    return activitiesList;
+                                } else {
+                                    return ''; // No data for this month
+                                }
+                            }
+                        },
+                    @endforeach
+                    {
+                        data: null,
+                        title: 'Action',
+                        render: function(data, type, row) {
+                            if (Array.isArray(data.activity_months) && data.activity_months.length === 0) {
+                                return ''; // No data for this row, return an empty string
+                            } else {
                                 return '<button class="btn btn-sm btn-danger delete-method" data-learning_activity_id="' + data.activity_months[0].learning_activity_id + '" data-method="' + row.learning_method + '">Delete</button>';
                             }
                         }
-                    ]
-                });
+                    }
+                ]
+            });
+
 
                 $('#table_activities').on('click', '.delete-method', function() {
                     var learningActivityId = $(this).data('learning_activity_id');
