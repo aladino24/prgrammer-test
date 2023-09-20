@@ -59,7 +59,7 @@
                     <!-- Form input activity -->
                     <form>
                         <div class="form-group">
-                            <label for="categoryMethod">Kategori Method:</label>
+                            <label for="categoryMethodSelect">Kategori Method:</label>
                             <select class="form-control" id="categoryMethodSelect">
                                 <option value="">Select a category method</option>
                             </select>
@@ -128,7 +128,7 @@
 
             // Tangkap tombol "Simpan" di modal
             $('#addActivityModal').on('click', '.btn-primary', function() {
-                var categoryMethod = $('#categoryMethod').val();
+                var categoryMethod = $('#categoryMethodSelect').val();
                 var activityName = $('#activityName').val();
                 var startDate = $('#startDate').val();
                 var endDate = $('#endDate').val();
