@@ -6,6 +6,7 @@ use App\Models\ActivityMonth;
 use App\Models\LearningActivity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\Datatables;
 
 class LearningActivityController extends Controller
@@ -26,6 +27,27 @@ class LearningActivityController extends Controller
         $categoryMethods = LearningActivity::distinct()->select('id', 'learning_method')->get();
 
         return response()->json($categoryMethods);
+    }
+
+    public function deleteActivitiesByLearningMethod($id) {
+        try {
+            DB::beginTransaction();
+    
+            // Hapus semua ActivityMonth dengan learning_activity_id yang sesuai
+            $learningActivityId = $id;
+    
+            ActivityMonth::where('learning_activity_id', $learningActivityId)->delete();
+    
+            LearningActivity::where('id', $learningActivityId)->delete();
+    
+            DB::commit();
+    
+            return response()->json(['message' => 'ActivityMonths deleted successfully']);
+        } catch (\Exception $e) {
+            DB::rollback();
+    
+            return response()->json(['message' => 'ActivityMonths failed to delete']);
+        }
     }
 
 

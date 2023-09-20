@@ -102,6 +102,7 @@
                                 data: null,
                                 title: '{{$month}}', 
                                 render: function(data, type, row) {
+                                    // console.log(data.activity_months[0].learning_activity_id)
                                     var activities = row.activity_months.filter(function(monthData) {
                                         return monthData.month === '{{$month}}';
                                     });
@@ -126,11 +127,36 @@
                             title: 'Action', 
                             render: function(data, type, row) {
                                
-                                return '<button class="btn btn-sm btn-danger delete-method" data-id="' + data.id + '">Delete</button>';
+                                return '<button class="btn btn-sm btn-danger delete-method" data-learning_activity_id="' + data.activity_months[0].learning_activity_id + '" data-method="' + row.learning_method + '">Delete</button>';
                             }
                         }
                     ]
                 });
+
+                $('#table_activities').on('click', '.delete-method', function() {
+                    var learningActivityId = $(this).data('learning_activity_id');
+                    var learningMethod = $(this).data('method');
+                    console.log(learningActivityId)
+                    if (confirm('Are you sure you want to delete all activities for the learning method ' + learningMethod + '?')) {
+                
+                        $.ajax({
+                            url: "delete-activities-by-learning-method/" + learningActivityId,
+                            type: "DELETE",
+                            data: {
+                                learningActivityId: learningActivityId,
+                                _token: "{{ csrf_token() }}",
+                            },
+                            success: function(response) {
+                                alert(response.message);
+                                table.ajax.reload();
+                            },
+                            error: function(response) {
+                                alert('Failed to delete activities.');
+                            }
+                        });
+                    }
+                });
+
 
             $('#addActivityModal').on('show.bs.modal', function() {
                 var categoryMethodSelect = $('#categoryMethodSelect');
