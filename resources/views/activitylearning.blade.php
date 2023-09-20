@@ -7,7 +7,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
+    <link href="https://cdn.datatables.net/v/dt/dt-1.13.6/datatables.min.css" rel="stylesheet">
     <title>Aktivitas Belajar</title>
   </head>
   <body>
@@ -19,28 +19,21 @@
             <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addActivityModal">Tambah Activity</button>
             <br>
             <br>
-            <table class="table" style="font-size: 12px">
+            <table class="table" id="table_activities">
                 <thead class="thead-dark">
-                  <tr>
-                    <th scope="col">Method</th>
-                    <th scope="col">Januari</th>
-                    <th scope="col">Februari</th>
-                    <th scope="col">Maret</th>
-                    <th scope="col">April</th>
-                    <th scope="col">Mei</th>
-                    <th scope="col">Juni</th>
-                    <th scope="col">Juli</th>
-                    <th scope="col">Agustus</th>
-                    <th scope="col">September</th>
-                    <th scope="col">Oktober</th>
-                    <th scope="col">November</th>
-                    <th scope="col">Desember</th>
-                    <th scope="col">Action</th>
-                  </tr>
+                    <tr>
+                        <th scope="col">Method</th>
+                        @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $month)
+                            <th scope="col">{{ $month }}</th>
+                        @endforeach
+                        <th scope="col">Action</th>
+                    </tr>
                 </thead>
                 <tbody>
+                    <!-- Data will be populated here using Ajax -->
                 </tbody>
-              </table>
+            </table>
+            
         
         </div>
       
@@ -93,9 +86,41 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+    <script src="https://cdn.datatables.net/v/dt/dt-1.13.6/datatables.min.js"></script>
     <script>
         $(document).ready(function() {
+
+            var table = $('#table_activities').DataTable({
+                ajax: {
+                    url: "{{ route('get-learning-activities') }}",
+                    type: "GET",
+                },
+                columns: [
+                    { data: 'learning_method', title: 'Learning Method' }, // Set the title for the learning_method column
+                    @foreach (['Januari', 'February', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $month)
+                        {
+                            data: null,
+                            title: '{{$month}}', // Set the title for each month column
+                            render: function(data, type, row) {
+                                var activity = row.activity_months.find(function(monthData) {
+                                    return monthData.month === '{{$month}}';
+                                });
+                                return activity ? activity.activities : '';
+                            }
+                        },
+                    @endforeach
+                    {
+                        data: null,
+                        title: 'Action', // Set the title for the action column
+                        render: function(data, type, row) {
+                            // Add action buttons here (Edit and Delete buttons)
+                            return '<a href="javascript:void(0);" class="btn btn-warning edit-method" data-id="' + data.id + '">Edit</a>' +
+                            '&nbsp;&nbsp;' + // Add some HTML space
+                            '<button class="btn btn-danger delete-method" data-id="' + data.id + '">Delete</button>';
+                        }
+                    }
+                ]
+            });
 
             $('#addActivityModal').on('show.bs.modal', function() {
                 var categoryMethodSelect = $('#categoryMethodSelect');
@@ -149,6 +174,8 @@
                         alert(response.message);
                         // Tutup modal jika berhasil
                         $('#addActivityModal').modal('hide');
+                        // Refresh tabel
+                        table.ajax.reload();
                     },
                     error: function(response) {
                         // Tampilkan pesan kesalahan jika ada masalah

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [LearningActivityController::class, 'index']);
+Route::get('get-learning-activities', [LearningActivityController::class, 'getLearningActivities'])->name('get-learning-activities');
 Route::get('/metode', [LearningActivityController::class, 'get_learning_method'])->name('get-learning-method');
 Route::get('/metode/{id}/edit', [LearningActivityController::class, 'get_learning_method_edit'])->name('get_learning_method_edit');
 Route::get('/get-category-methods', [LearningActivityController::class, 'getCategoryMethods'])->name('get-category-methods');

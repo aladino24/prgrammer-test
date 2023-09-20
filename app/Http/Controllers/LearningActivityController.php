@@ -6,6 +6,7 @@ use App\Models\ActivityMonth;
 use App\Models\LearningActivity;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\Datatables;
 
 class LearningActivityController extends Controller
 {
@@ -13,6 +14,13 @@ class LearningActivityController extends Controller
         $learningActivities = LearningActivity::with('activityMonths')->get();
         return view('activitylearning', compact('learningActivities'));
     }
+
+    public function getLearningActivities(Request $request){
+        $learningActivities = LearningActivity::with('activityMonths')->get();
+        
+        return DataTables::of($learningActivities)->make(true);
+    }
+
 
     public function getCategoryMethods(){
         $categoryMethods = LearningActivity::distinct()->select('id', 'learning_method')->get();
