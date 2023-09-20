@@ -26,7 +26,7 @@
                         @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $month)
                             <th scope="col">{{ $month }}</th>
                         @endforeach
-                        <th scope="col">Action</th>
+                        {{-- <th scope="col">Action</th> --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -97,7 +97,7 @@
                 },
                 columns: [
                     { data: 'learning_method', title: 'Learning Method' }, // Set the title for the learning_method column
-                    @foreach (['Januari', 'February', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $month)
+                    @foreach (['January', 'February', 'Maret', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
                         {
                             data: null,
                             title: '{{$month}}', // Set the title for each month column
@@ -109,16 +109,16 @@
                             }
                         },
                     @endforeach
-                    {
-                        data: null,
-                        title: 'Action', // Set the title for the action column
-                        render: function(data, type, row) {
-                            // Add action buttons here (Edit and Delete buttons)
-                            return '<a href="javascript:void(0);" class="btn btn-warning edit-method" data-id="' + data.id + '">Edit</a>' +
-                            '&nbsp;&nbsp;' + // Add some HTML space
-                            '<button class="btn btn-danger delete-method" data-id="' + data.id + '">Delete</button>';
-                        }
-                    }
+                    // {
+                    //     data: null,
+                    //     title: 'Action', // Set the title for the action column
+                    //     render: function(data, type, row) {
+                    //         // Add action buttons here (Edit and Delete buttons)
+                    //         return '<a href="javascript:void(0);" class="btn btn-warning edit-method" data-id="' + data.id + '">Edit</a>' +
+                    //         '&nbsp;&nbsp;' + // Add some HTML space
+                    //         '<button class="btn btn-danger delete-method" data-id="' + data.id + '">Delete</button>';
+                    //     }
+                    // }
                 ]
             });
 
