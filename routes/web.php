@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LearningActivityController::class, 'index']);
 Route::get('/metode', [LearningActivityController::class, 'get_learning_method'])->name('get-learning-method');
 Route::get('/metode/{id}/edit', [LearningActivityController::class, 'get_learning_method_edit'])->name('get_learning_method_edit');
+Route::get('/get-category-methods', [LearningActivityController::class, 'getCategoryMethods'])->name('get-category-methods');
 Route::put('/metode/{id}', [LearningActivityController::class, 'edit_learning_method'])->name('get_learning_method');
 Route::delete('/metode/{id}', [LearningActivityController::class, 'delete_learning_method'])->name('delete_learning_method');
 Route::get('/get-learning-method-datatable', [LearningActivityController::class, 'get_learning_method_datatable'])->name('get-learning-method-datatable');

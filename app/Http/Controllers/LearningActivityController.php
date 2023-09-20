@@ -14,6 +14,13 @@ class LearningActivityController extends Controller
         return view('activitylearning', compact('learningActivities'));
     }
 
+    public function getCategoryMethods(){
+        $categoryMethods = LearningActivity::distinct()->select('id', 'learning_method')->get();
+
+        return response()->json($categoryMethods);
+    }
+
+
     public function get_learning_method(){
         $learningMethods = LearningActivity::all();
         return view('methodlearning', compact('learningMethods'));

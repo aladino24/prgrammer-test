@@ -30,36 +30,15 @@
                     <th scope="col">Mei</th>
                     <th scope="col">Juni</th>
                     <th scope="col">Juli</th>
+                    <th scope="col">Agustus</th>
+                    <th scope="col">September</th>
+                    <th scope="col">Oktober</th>
+                    <th scope="col">November</th>
+                    <th scope="col">Desember</th>
                     <th scope="col">Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th >Workshop / Self Learning</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>Otto</td>
-                    <td>Otto</td>
-                    <td>Otto</td>
-                    <td>Otto</td>
-                    <td>Otto</td>
-                  </tr>
-                  <tr>
-                    <th ></th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
-                    <td>Thornton</td>
-                    <td>Thornton</td>
-                    <td>Thornton</td>
-                    <td>Thornton</td>
-                    <td>@fat</td>
-                  </tr>
-                  <tr>
-                    <th></th>
-                    <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
-                  </tr>
                 </tbody>
               </table>
         
@@ -81,12 +60,11 @@
                     <form>
                         <div class="form-group">
                             <label for="categoryMethod">Kategori Method:</label>
-                            <select class="form-control" id="categoryMethod">
-                                <option value="1">Workshop / Self Learning</option>
-                                <option value="Lainnya">Lainnya</option>
-                                <!-- Tambahkan pilihan kategori lainnya di sini -->
+                            <select class="form-control" id="categoryMethodSelect">
+                                <option value="">Select a category method</option>
                             </select>
                         </div>
+                        
                         <div class="form-group">
                             <label for="activityName">Nama Activity:</label>
                             <input type="text" class="form-control" id="activityName">
@@ -118,6 +96,36 @@
 
     <script>
         $(document).ready(function() {
+
+            $('#addActivityModal').on('show.bs.modal', function() {
+                var categoryMethodSelect = $('#categoryMethodSelect');
+
+                // Clear existing options
+                categoryMethodSelect.empty();
+
+                // Fetch category methods via AJAX
+                $.ajax({
+                    url: "{{ route('get-category-methods') }}",
+                    type: "GET",
+                    success: function(response) {
+                        categoryMethodSelect.append($('<option>', {
+                            value: "", 
+                            text: "Select a category method"
+                        }));
+                        
+                        $.each(response, function(index, categoryMethod) {
+                            categoryMethodSelect.append($('<option>', {
+                                value: categoryMethod.id, 
+                                text: categoryMethod.learning_method
+                            }));
+                        });
+                    },
+                    error: function(response) {
+                        alert('Failed to fetch category methods.');
+                    }
+                });
+            });
+
             // Tangkap tombol "Simpan" di modal
             $('#addActivityModal').on('click', '.btn-primary', function() {
                 var categoryMethod = $('#categoryMethod').val();
@@ -147,6 +155,8 @@
                         alert('Gagal menyimpan data aktivitas.');
                     }
                 });
+
+                
             });
         });
     </script>
