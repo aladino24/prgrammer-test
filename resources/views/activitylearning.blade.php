@@ -15,7 +15,7 @@
         <br>
        
         <br>
-        <div class="container">
+        <div class="container-fluid">
             <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addActivityModal">Tambah Activity</button>
             <br>
             <br>
