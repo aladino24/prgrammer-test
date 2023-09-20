@@ -143,6 +143,11 @@
                     url: "{{ route('get-category-methods') }}",
                     type: "GET",
                     success: function(response) {
+                        // console.log(response)
+                        // jika response kosong
+                        if (response.length === 0) {
+                            $('#exampleModalLabel').append('<p class="text-danger"><i>Please add a method first</i></p>');
+                        } 
                         categoryMethodSelect.append($('<option>', {
                             value: "", 
                             text: "Select a category method"
