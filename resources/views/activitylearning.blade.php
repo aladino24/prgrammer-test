@@ -26,7 +26,7 @@
                         @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $month)
                             <th scope="col">{{ $month }}</th>
                         @endforeach
-                        {{-- <th scope="col">Action</th> --}}
+                        <th scope="col">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,36 +91,46 @@
         $(document).ready(function() {
 
             var table = $('#table_activities').DataTable({
-                ajax: {
-                    url: "{{ route('get-learning-activities') }}",
-                    type: "GET",
-                },
-                columns: [
-                    { data: 'learning_method', title: 'Learning Method' }, // Set the title for the learning_method column
-                    @foreach (['January', 'February', 'Maret', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                    ajax: {
+                        url: "{{ route('get-learning-activities') }}",
+                        type: "GET",
+                    },
+                    columns: [
+                        { data: 'learning_method', title: 'Metode' }, // Set the title for the learning_method column
+                        @foreach (['January', 'February', 'Maret', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] as $month)
+                            {
+                                data: null,
+                                title: '{{$month}}', 
+                                render: function(data, type, row) {
+                                    var activities = row.activity_months.filter(function(monthData) {
+                                        return monthData.month === '{{$month}}';
+                                    });
+
+                                    if (activities.length > 0) {
+                                        
+                                        var activitiesList = '<ul>';
+                                        activities.forEach(function(activity) {
+                                            activitiesList += '<li>' + activity.activities + '</li>';
+                                        });
+                                        activitiesList += '</ul>';
+                                        
+                                        return activitiesList
+                                    } else {
+                                        return ''; // No data for this month
+                                    }
+                                }
+                            },
+                        @endforeach
                         {
                             data: null,
-                            title: '{{$month}}', // Set the title for each month column
+                            title: 'Action', 
                             render: function(data, type, row) {
-                                var activity = row.activity_months.find(function(monthData) {
-                                    return monthData.month === '{{$month}}';
-                                });
-                                return activity ? activity.activities : '';
+                               
+                                return '<button class="btn btn-sm btn-danger delete-method" data-id="' + data.id + '">Delete</button>';
                             }
-                        },
-                    @endforeach
-                    // {
-                    //     data: null,
-                    //     title: 'Action', // Set the title for the action column
-                    //     render: function(data, type, row) {
-                    //         // Add action buttons here (Edit and Delete buttons)
-                    //         return '<a href="javascript:void(0);" class="btn btn-warning edit-method" data-id="' + data.id + '">Edit</a>' +
-                    //         '&nbsp;&nbsp;' + // Add some HTML space
-                    //         '<button class="btn btn-danger delete-method" data-id="' + data.id + '">Delete</button>';
-                    //     }
-                    // }
-                ]
-            });
+                        }
+                    ]
+                });
 
             $('#addActivityModal').on('show.bs.modal', function() {
                 var categoryMethodSelect = $('#categoryMethodSelect');
